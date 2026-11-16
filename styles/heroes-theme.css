@@ -1,0 +1,23 @@
+.heroes-theme-config .heroes-theme-players {
+  width: 100%;
+  margin: 0;
+}
+
+.heroes-theme-config .heroes-theme-players th {
+  text-align: left;
+}
+
+.heroes-theme-config .heroes-theme-players td {
+  padding: 2px 4px;
+  vertical-align: middle;
+}
+
+.heroes-theme-config .heroes-theme-players td:last-child,
+.heroes-theme-config .heroes-theme-players th:last-child {
+  width: 3rem;
+  text-align: center;
+}
+
+.heroes-theme-config .heroes-theme-players select {
+  width: 100%;
+}

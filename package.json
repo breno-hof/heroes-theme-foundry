@@ -1,13 +1,14 @@
 {
   "name": "heroes-theme-foundry",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Foundry VTT client module for Hero's Theme.",
   "license": "AGPL-3.0-only",
   "type": "module",
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
-    "build": "esbuild src/module.ts --bundle --minify --format=esm --target=es2024 --sourcemap --outfile=dist/module.js",
+    "build": "node build.mjs",
+    "dev": "node build.mjs --dev",
     "check": "npm run typecheck && npm run build"
   },
   "dependencies": {

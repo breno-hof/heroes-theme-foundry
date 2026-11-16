@@ -21,6 +21,8 @@ export interface BridgeListenerOptions {
   config: ThemeConfigInput;
   player: ThemePlayer;
   logger: Logger;
+  /** Called once when the bot rejects the token or protocol version; the listener stops retrying. */
+  onRefused?: () => void;
 }
 
 const RECONNECT_MIN_MS = 1000;
@@ -109,6 +111,7 @@ export class BridgeListener {
       if (FATAL_CLOSE_CODES.has(event.code)) {
         this.#stopped = true;
         logger.log('error', 'bridge_refused', { code: event.code, reason: event.reason });
+        this.#options.onRefused?.();
         return;
       }
       const backoff = Math.min(RECONNECT_MAX_MS, RECONNECT_MIN_MS * 2 ** this.#attempt++);

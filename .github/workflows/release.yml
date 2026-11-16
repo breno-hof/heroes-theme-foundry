@@ -1,0 +1,59 @@
+name: Release
+
+# Push a tag like v0.2.0 (matching module.json) to publish a GitHub Release with
+# heroes-theme.zip and module.json attached. Foundry installs and updates from
+# the releases/latest/download/ URLs in module.json.
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the release
+      packages: read # install @breno-hof/heroes-theme-core from GitHub Packages
+      id-token: write # OIDC identity for the provenance attestation
+      attestations: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+
+      - name: Check tag matches module.json and package.json versions
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          module_version="$(node -p "require('./module.json').version")"
+          package_version="$(node -p "require('./package.json').version")"
+          if ! [[ "$module_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::module.json version '$module_version' is not valid semver"; exit 1
+          fi
+          if [[ "$TAG" != "v$module_version" || "$module_version" != "$package_version" ]]; then
+            echo "::error::tag $TAG, module.json $module_version and package.json $package_version must agree"; exit 1
+          fi
+
+      - name: Install dependencies
+        run: if [[ -f package-lock.json ]]; then npm ci; else npm install; fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: npm run check
+
+      - name: Package
+        run: cd dist && zip -r ../heroes-theme.zip .
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: heroes-theme.zip
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: gh release create "$TAG" heroes-theme.zip dist/module.json --title "$TAG" --generate-notes --verify-tag
