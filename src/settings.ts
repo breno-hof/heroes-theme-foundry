@@ -4,14 +4,18 @@ import {
   type EngineSettings,
   type EngineSettingsInput,
   type ThemeConfig,
+  type ThemeMappingInput,
+  type ThemeSet,
 } from '@breno-hof/heroes-theme-core';
+import { MODULE_ID } from './constants.js';
+import { getThemes } from './flags.js';
 
-export const MODULE_ID = 'heroes-theme';
+export { MODULE_ID };
 
 /** What the GM configured for one Foundry user. Keyed by Foundry user ID in the `userThemes` setting. */
 export interface UserTheme {
   discordUserId: string;
-  /** PlaylistSound UUID, or empty for "no theme". */
+  /** Fallback PlaylistSound UUID chosen by the GM, used when the player picked no theme of their own. Empty for none. */
   themeId: string;
   enabled: boolean;
 }
@@ -82,10 +86,37 @@ export function getEngineSettings(): EngineSettings {
   return parsed.success ? parsed.data : EngineSettingsSchema.parse({});
 }
 
-/** Combine per-user links and engine settings into a validated core config. Throws `ZodError`. */
+/**
+ * Combine the GM's links, each player's own themes and the themes set on
+ * character sheets into a validated core config. Throws `ZodError`.
+ */
 export function buildThemeConfig(userThemes: UserThemes, engine: EngineSettingsInput): ThemeConfig {
-  const mappings = Object.values(userThemes)
-    .filter((entry) => entry.discordUserId !== '' && entry.themeId !== '')
-    .map((entry) => ({ discordUserId: entry.discordUserId, themeId: entry.themeId, enabled: entry.enabled }));
+  // Every speaker gets every character's themes; which one applies is decided
+  // at runtime by the persona reported for that speaker.
+  const personas: Record<string, ThemeSet> = {};
+  for (const actor of game.actors) {
+    const themes = getThemes(actor);
+    if (Object.keys(themes).length > 0) personas[actor.id] = themes;
+  }
+
+  const mappings: ThemeMappingInput[] = [];
+  for (const [foundryUserId, entry] of Object.entries(userThemes)) {
+    if (entry.discordUserId === '') continue;
+    const user = game.users.get(foundryUserId);
+    mappings.push({
+      discordUserId: entry.discordUserId,
+      enabled: entry.enabled,
+      themes: user ? getThemes(user) : {},
+      personas,
+      ...(entry.themeId !== '' ? { themeId: entry.themeId } : {}),
+    });
+  }
   return parseThemeConfig({ settings: engine, mappings });
+}
+
+/** Foundry user IDs linked to a Discord account. */
+export function linkedUserIds(): string[] {
+  return Object.entries(getUserThemes())
+    .filter(([, entry]) => entry.discordUserId !== '')
+    .map(([userId]) => userId);
 }

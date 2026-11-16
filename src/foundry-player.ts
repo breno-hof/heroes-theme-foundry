@@ -17,7 +17,8 @@ export class FoundryThemePlayer implements ThemePlayer {
       throw new Error(`"${command.themeId}" is not a PlaylistSound UUID`);
     }
     if (command.type === 'theme.play') {
-      await sound.update({ volume: command.volume, fade: command.fadeInMs });
+      // A theme loops for as long as its speaker holds the floor.
+      await sound.update({ volume: command.volume, fade: command.fadeInMs, repeat: true });
       await sound.parent.playSound(sound);
     } else {
       await sound.update({ fade: command.fadeOutMs });

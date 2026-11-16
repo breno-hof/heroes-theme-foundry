@@ -13,6 +13,11 @@
         "Name": "Themes",
         "Label": "Configure themes",
         "Hint": "Bridge connection, player themes and triggers. Visible to the GM only."
+      },
+      "MyThemes": {
+        "Name": "My themes",
+        "Label": "Choose my themes",
+        "Hint": "Your mood and the music that plays when you speak."
       }
     },
     "Config": {
@@ -21,7 +26,7 @@
       "Players": "Players",
       "Player": "Player",
       "DiscordId": "Discord user ID",
-      "Theme": "Theme",
+      "Theme": "Fallback theme",
       "NoTheme": "None",
       "Enabled": "On",
       "Triggers": "Triggers",
@@ -32,12 +37,44 @@
       "Exclusive": "One theme at a time",
       "Layered": "Play all themes together",
       "Volume": "Default volume",
-      "Save": "Save"
+      "Save": "Save",
+      "PlayersHint": "Theme is a fallback used only when the player has not chosen their own. Players pick their themes and mood themselves; characters get theirs from the Hero's Theme entry in the sheet header.",
+      "AllowUploads": "Players can upload audio",
+      "AllowUploadsHint": "Changes Foundry's role permissions (Upload Files and Use File Browser) for the Player and Trusted Player roles. Without it, players can only choose sounds that are already in their playlist."
     },
     "Notify": {
       "MissingBridge": "Hero's Theme: set the bridge URL and token under Configure themes in the module settings.",
       "InvalidConfig": "Hero's Theme: the configuration is invalid and was not saved.",
       "Refused": "Hero's Theme: the bot refused the connection. Check the bridge token and module version."
+    },
+    "Mood": {
+      "default": "Default",
+      "calm": "Calm",
+      "tense": "Tense",
+      "combat": "Combat",
+      "sad": "Sad",
+      "triumphant": "Triumphant"
+    },
+    "Themes": {
+      "TitleUser": "My themes",
+      "TitleActor": "Character themes",
+      "CurrentMood": "Right now",
+      "Mood": "Mood",
+      "MoodHint": "Your theme changes with your mood. You can also change it from the Players list.",
+      "PerMood": "Theme for each mood",
+      "None": "None",
+      "NoSounds": "There are no sounds to choose from yet. Add music to a playlist first.",
+      "HintUser": "Moods left on None use your Default theme. A character with its own themes takes priority while you control its token.",
+      "HintActor": "Plays when whoever controls this character's token speaks. Moods left on None use this character's Default theme, then the speaker's own themes.",
+      "MyMusic": "My music",
+      "OpenPlaylist": "Open my playlist",
+      "PlaylistHint": "Add your own tracks to this playlist, then pick them above.",
+      "UploadDisabled": "Uploading files is disabled for players. Ask the GM to enable it, or choose from the sounds already available.",
+      "NoPlaylist": "You do not have a playlist yet. It is created once the GM links your Discord account.",
+      "KeepCurrent": "Keep current theme"
+    },
+    "Actor": {
+      "Control": "Hero's Theme"
     }
   }
 }

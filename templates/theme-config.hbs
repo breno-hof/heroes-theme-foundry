@@ -1,10 +1,10 @@
 <div class="heroes-theme-form standard-form">
   {{!-- ApplicationV2 requires each template part to render exactly one root element. --}}
-  <fieldset>
-    <legend>{{localize "HEROESTHEME.Config.Bridge"}}</legend>
+  <details class="heroes-theme-section" {{#unless bridgeConfigured}}open{{/unless}}>
+    <summary>{{localize "HEROESTHEME.Config.Bridge"}}</summary>
     <div class="form-group">
       <label>{{localize "HEROESTHEME.Settings.BridgeUrl.Name"}}</label>
-      <input type="url" name="bridge.url" value="{{bridge.url}}" placeholder="wss://bot.example.com">
+      <input type="text" name="bridge.url" value="{{bridge.url}}" placeholder="wss://bot.example.com">
       <p class="hint">{{localize "HEROESTHEME.Settings.BridgeUrl.Hint"}}</p>
     </div>
     <div class="form-group">
@@ -12,10 +12,10 @@
       <input type="password" name="bridge.token" value="{{bridge.token}}" autocomplete="off">
       <p class="hint">{{localize "HEROESTHEME.Settings.BridgeToken.Hint"}}</p>
     </div>
-  </fieldset>
+  </details>
 
-  <fieldset>
-    <legend>{{localize "HEROESTHEME.Config.Players"}}</legend>
+  <details class="heroes-theme-section" open>
+    <summary>{{localize "HEROESTHEME.Config.Players"}}</summary>
     <table class="heroes-theme-players">
       <thead>
         <tr>
@@ -28,7 +28,7 @@
       <tbody>
         {{#each users}}
         <tr>
-          <td>{{name}}</td>
+          <td class="heroes-theme-name">{{name}}</td>
           <td>
             <input type="text" name="users.{{id}}.discordUserId" value="{{discordUserId}}"
                    inputmode="numeric" pattern="\d{15,22}" placeholder="123456789012345678">
@@ -44,10 +44,16 @@
         {{/each}}
       </tbody>
     </table>
-  </fieldset>
+    <p class="hint">{{localize "HEROESTHEME.Config.PlayersHint"}}</p>
+    <div class="form-group">
+      <label>{{localize "HEROESTHEME.Config.AllowUploads"}}</label>
+      <input type="checkbox" name="allowPlayerUploads" {{checked allowPlayerUploads}}>
+      <p class="hint">{{localize "HEROESTHEME.Config.AllowUploadsHint"}}</p>
+    </div>
+  </details>
 
-  <fieldset>
-    <legend>{{localize "HEROESTHEME.Config.Triggers"}}</legend>
+  <details class="heroes-theme-section">
+    <summary>{{localize "HEROESTHEME.Config.Triggers"}}</summary>
     <div class="form-group">
       <label>{{localize "HEROESTHEME.Config.StartDebounce"}}</label>
       <input type="number" name="engine.startDebounceMs" value="{{engine.startDebounceMs}}" min="0" step="100">
@@ -70,7 +76,7 @@
       <label>{{localize "HEROESTHEME.Config.Volume"}}</label>
       <input type="number" name="engine.defaultVolume" value="{{engine.defaultVolume}}" min="0" max="1" step="0.05">
     </div>
-  </fieldset>
+  </details>
 
   <footer class="form-footer">
     <button type="submit"><i class="fa-solid fa-floppy-disk"></i> {{localize "HEROESTHEME.Config.Save"}}</button>

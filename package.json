@@ -1,6 +1,6 @@
 {
   "name": "heroes-theme-foundry",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "private": true,
   "description": "Foundry VTT client module for Hero's Theme.",
   "license": "AGPL-3.0-only",
@@ -12,7 +12,7 @@
     "check": "npm run typecheck && npm run build"
   },
   "dependencies": {
-    "@breno-hof/heroes-theme-core": "^0.1.0"
+    "@breno-hof/heroes-theme-core": "^0.2.0"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",

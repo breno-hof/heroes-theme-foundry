@@ -24,25 +24,47 @@ interface FoundrySettingMenuConfig {
   restricted: boolean;
 }
 
+interface FoundryDocument {
+  readonly id: string;
+  readonly name: string;
+  readonly uuid: string;
+  readonly isOwner: boolean;
+  getFlag(scope: string, key: string): unknown;
+  setFlag(scope: string, key: string, value: unknown): Promise<unknown>;
+  testUserPermission(user: FoundryUser, level: 'OBSERVER' | 'OWNER'): boolean;
+}
+
+interface FoundryUser extends FoundryDocument {
+  readonly isSelf: boolean;
+  readonly isGM: boolean;
+  /** The character assigned to this user in the player configuration. */
+  readonly character: FoundryActor | null;
+  can(permission: string): boolean;
+}
+
+interface FoundryActor extends FoundryDocument {
+  readonly documentName: 'Actor';
+  /** Whether any non-GM user owns this actor. */
+  readonly hasPlayerOwner: boolean;
+}
+
 interface FoundryPlaylistSound {
   readonly uuid: string;
   readonly name: string;
   readonly playing: boolean;
   readonly parent: FoundryPlaylist | null;
-  update(data: { volume?: number; fade?: number }): Promise<unknown>;
+  update(data: { volume?: number; fade?: number; repeat?: boolean }): Promise<unknown>;
 }
 
-interface FoundryPlaylist {
-  readonly name: string;
+interface FoundryPlaylist extends FoundryDocument {
   readonly sounds: Iterable<FoundryPlaylistSound>;
+  readonly sheet: { render(options: { force: boolean }): unknown };
   playSound(sound: FoundryPlaylistSound): Promise<unknown>;
   stopSound(sound: FoundryPlaylistSound): Promise<unknown>;
 }
 
-interface FoundryUser {
-  readonly id: string;
-  readonly name: string;
-  readonly isSelf: boolean;
+interface FoundryCollection<T> extends Iterable<T> {
+  get(id: string): T | undefined;
 }
 
 declare const game: {
@@ -52,10 +74,18 @@ declare const game: {
     get(namespace: string, key: string): unknown;
     set(namespace: string, key: string, value: unknown): Promise<unknown>;
   };
-  users: Iterable<FoundryUser> & { activeGM: FoundryUser | null };
-  playlists: Iterable<FoundryPlaylist>;
+  user: FoundryUser;
+  users: FoundryCollection<FoundryUser> & { activeGM: FoundryUser | null };
+  actors: FoundryCollection<FoundryActor>;
+  playlists: FoundryCollection<FoundryPlaylist>;
   modules: { get(id: string): { version: string } | undefined };
   i18n: { localize(key: string): string };
+};
+
+declare const canvas: { tokens?: { controlled: Array<{ actor: FoundryActor | null }> } } | undefined;
+
+declare const CONFIG: {
+  Playlist: { documentClass: { create(data: object): Promise<FoundryPlaylist> } };
 };
 
 declare const Hooks: {
@@ -65,9 +95,11 @@ declare const Hooks: {
 
 declare const ui: {
   notifications: {
+    info(message: string): void;
     warn(message: string): void;
     error(message: string): void;
   };
+  players?: { render(options?: object): unknown };
 };
 
 declare function fromUuid(uuid: string): Promise<unknown>;
@@ -77,6 +109,7 @@ declare namespace foundry {
     class ApplicationV2 {
       static DEFAULT_OPTIONS: object;
       constructor(options?: object);
+      get title(): string;
       render(options?: { force?: boolean }): Promise<this>;
       close(): Promise<this>;
       protected _prepareContext(options: object): Promise<object>;
@@ -90,5 +123,7 @@ declare namespace foundry {
   }
   namespace utils {
     function expandObject(object: Record<string, unknown>): Record<string, unknown>;
+    function deepClone<T>(value: T): T;
+    function debounce<A extends unknown[]>(callback: (...args: A) => void, delayMs: number): (...args: A) => void;
   }
 }

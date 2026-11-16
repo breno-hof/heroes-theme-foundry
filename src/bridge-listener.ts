@@ -5,6 +5,7 @@ import {
   decodeServerMessage,
   encodeMessage,
   type Logger,
+  type Mood,
   type ThemeCommand,
   type ThemeConfigInput,
 } from '@breno-hof/heroes-theme-core';
@@ -69,6 +70,12 @@ export class BridgeListener {
   /** Throws `ZodError` if the config is invalid; the previous config stays in effect. */
   updateConfig(config: ThemeConfigInput): void {
     this.#manager.updateConfig(config);
+  }
+
+  /** Tell the state manager what mood a speaker is in and which character they are voicing. */
+  setContext(discordUserId: string, mood: Mood, persona: string | null): void {
+    this.#manager.setMood(discordUserId, mood);
+    this.#manager.setPersona(discordUserId, persona);
   }
 
   #connect(): void {

@@ -13,6 +13,11 @@
         "Name": "Temas",
         "Label": "Configurar temas",
         "Hint": "Conexão com o bridge, temas dos jogadores e gatilhos. Visível apenas para o Mestre."
+      },
+      "MyThemes": {
+        "Name": "Meus temas",
+        "Label": "Escolher meus temas",
+        "Hint": "Seu humor e a música que toca quando você fala."
       }
     },
     "Config": {
@@ -21,7 +26,7 @@
       "Players": "Jogadores",
       "Player": "Jogador",
       "DiscordId": "ID de usuário do Discord",
-      "Theme": "Tema",
+      "Theme": "Tema reserva",
       "NoTheme": "Nenhum",
       "Enabled": "Ativo",
       "Triggers": "Gatilhos",
@@ -32,12 +37,44 @@
       "Exclusive": "Um tema por vez",
       "Layered": "Tocar todos os temas juntos",
       "Volume": "Volume padrão",
-      "Save": "Salvar"
+      "Save": "Salvar",
+      "PlayersHint": "Tema é uma reserva, usada só quando o jogador não escolheu o próprio. Os jogadores escolhem seus temas e humor; os personagens recebem os deles pela opção Hero's Theme no cabeçalho da ficha.",
+      "AllowUploads": "Jogadores podem enviar áudio",
+      "AllowUploadsHint": "Altera as permissões de papel do Foundry (Enviar Arquivos e Usar o Navegador de Arquivos) para Jogador e Jogador Confiável. Sem isso, os jogadores só escolhem sons que já estão na playlist deles."
     },
     "Notify": {
       "MissingBridge": "Hero's Theme: defina a URL e o token do bridge em Configurar temas, nas configurações do módulo.",
       "InvalidConfig": "Hero's Theme: a configuração é inválida e não foi salva.",
       "Refused": "Hero's Theme: o bot recusou a conexão. Confira o token do bridge e a versão do módulo."
+    },
+    "Mood": {
+      "default": "Padrão",
+      "calm": "Calmo",
+      "tense": "Tenso",
+      "combat": "Combate",
+      "sad": "Triste",
+      "triumphant": "Triunfante"
+    },
+    "Themes": {
+      "TitleUser": "Meus temas",
+      "TitleActor": "Temas do personagem",
+      "CurrentMood": "Agora",
+      "Mood": "Humor",
+      "MoodHint": "Seu tema muda conforme o humor. Você também pode trocá-lo pela lista de Jogadores.",
+      "PerMood": "Tema para cada humor",
+      "None": "Nenhum",
+      "NoSounds": "Ainda não há sons para escolher. Adicione músicas a uma playlist primeiro.",
+      "HintUser": "Humores em Nenhum usam o seu tema Padrão. Um personagem com temas próprios tem prioridade enquanto você controla o token dele.",
+      "HintActor": "Toca quando quem controla o token deste personagem fala. Humores em Nenhum usam o tema Padrão do personagem e, depois, os temas de quem está falando.",
+      "MyMusic": "Minhas músicas",
+      "OpenPlaylist": "Abrir minha playlist",
+      "PlaylistHint": "Adicione suas próprias faixas a esta playlist e depois escolha-as acima.",
+      "UploadDisabled": "O envio de arquivos está desativado para jogadores. Peça ao Mestre para ativar, ou escolha entre os sons já disponíveis.",
+      "NoPlaylist": "Você ainda não tem uma playlist. Ela é criada quando o Mestre vincula a sua conta do Discord.",
+      "KeepCurrent": "Manter o tema atual"
+    },
+    "Actor": {
+      "Control": "Hero's Theme"
     }
   }
 }

@@ -1,4 +1,6 @@
 import type { EngineSettingsInput } from '@breno-hof/heroes-theme-core';
+import { availableSounds } from './sounds.js';
+import { playersCanUpload, setPlayerUploads } from './uploads.js';
 import {
   MODULE_ID,
   Setting,
@@ -17,8 +19,13 @@ export class ThemeConfigApp extends HandlebarsApplicationMixin(ApplicationV2) {
     id: 'heroes-theme-config',
     tag: 'form',
     classes: ['heroes-theme-config', 'standard-form'],
-    window: { title: 'HEROESTHEME.Config.Title', icon: 'fa-solid fa-music', contentClasses: ['standard-form'] },
-    position: { width: 640 },
+    window: {
+      title: 'HEROESTHEME.Config.Title',
+      icon: 'fa-solid fa-music',
+      resizable: true,
+      contentClasses: ['standard-form'],
+    },
+    position: { width: 820 },
     form: { handler: ThemeConfigApp.#onSubmit, closeOnSubmit: true },
   };
 
@@ -28,12 +35,12 @@ export class ThemeConfigApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   protected override async _prepareContext(_options: object): Promise<object> {
     const stored = getUserThemes();
-    const sounds: Record<string, string> = {};
-    for (const playlist of game.playlists) {
-      for (const sound of playlist.sounds) sounds[sound.uuid] = `${playlist.name} / ${sound.name}`;
-    }
+    const sounds = availableSounds();
+    const bridge = getBridge();
     return {
-      bridge: getBridge(),
+      bridge,
+      bridgeConfigured: bridge.url !== '' && bridge.token !== '',
+      allowPlayerUploads: playersCanUpload(),
       users: [...game.users].map((user) => ({
         id: user.id,
         name: user.name,
@@ -59,6 +66,7 @@ export class ThemeConfigApp extends HandlebarsApplicationMixin(ApplicationV2) {
       users?: Record<string, { discordUserId?: unknown; themeId?: unknown; enabled?: unknown }>;
       engine?: EngineSettingsInput;
       bridge?: { url?: unknown; token?: unknown };
+      allowPlayerUploads?: unknown;
     };
     const userThemes: UserThemes = {};
     for (const [userId, entry] of Object.entries(data.users ?? {})) {
@@ -81,6 +89,9 @@ export class ThemeConfigApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     await game.settings.set(MODULE_ID, Setting.UserThemes, userThemes);
     await game.settings.set(MODULE_ID, Setting.Engine, engine);
+
+    const allowUploads = data.allowPlayerUploads === true;
+    if (allowUploads !== playersCanUpload()) await setPlayerUploads(allowUploads);
 
     const current = getBridge();
     const url = String(data.bridge?.url ?? '').trim();

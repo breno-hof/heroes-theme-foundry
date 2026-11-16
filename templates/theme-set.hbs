@@ -1,0 +1,60 @@
+<div class="heroes-theme-form standard-form">
+  {{#if isUser}}
+  <fieldset>
+    <legend>{{localize "HEROESTHEME.Themes.CurrentMood"}}</legend>
+    <div class="form-group">
+      <label>{{localize "HEROESTHEME.Themes.Mood"}}</label>
+      <select name="mood">
+        {{selectOptions moodChoices selected=mood localize=true}}
+      </select>
+      <p class="hint">{{localize "HEROESTHEME.Themes.MoodHint"}}</p>
+    </div>
+  </fieldset>
+  {{/if}}
+
+  <fieldset>
+    <legend>{{localize "HEROESTHEME.Themes.PerMood"}}</legend>
+    {{#unless hasSounds}}
+    <p class="hint">{{localize "HEROESTHEME.Themes.NoSounds"}}</p>
+    {{/unless}}
+    {{#each rows}}
+    <div class="form-group">
+      <label>{{localize label}}</label>
+      <select name="themes.{{mood}}">
+        <option value="">{{localize "HEROESTHEME.Themes.None"}}</option>
+        {{selectOptions ../sounds selected=themeId}}
+      </select>
+    </div>
+    {{/each}}
+    <p class="hint">
+      {{#if isUser}}{{localize "HEROESTHEME.Themes.HintUser"}}{{else}}{{localize "HEROESTHEME.Themes.HintActor"}}{{/if}}
+    </p>
+  </fieldset>
+
+  {{#if isUser}}
+  {{#unless isGM}}
+  <fieldset>
+    <legend>{{localize "HEROESTHEME.Themes.MyMusic"}}</legend>
+    {{#if hasPlaylist}}
+    <button type="button" data-action="openPlaylist">
+      <i class="fa-solid fa-list-music"></i> {{localize "HEROESTHEME.Themes.OpenPlaylist"}}
+    </button>
+    <p class="hint">{{localize "HEROESTHEME.Themes.PlaylistHint"}}</p>
+    {{#unless canUpload}}
+    <p class="hint heroes-theme-warning">
+      <i class="fa-solid fa-triangle-exclamation"></i> {{localize "HEROESTHEME.Themes.UploadDisabled"}}
+    </p>
+    {{/unless}}
+    {{else}}
+    <p class="hint heroes-theme-warning">
+      <i class="fa-solid fa-triangle-exclamation"></i> {{localize "HEROESTHEME.Themes.NoPlaylist"}}
+    </p>
+    {{/if}}
+  </fieldset>
+  {{/unless}}
+  {{/if}}
+
+  <footer class="form-footer">
+    <button type="submit"><i class="fa-solid fa-floppy-disk"></i> {{localize "HEROESTHEME.Config.Save"}}</button>
+  </footer>
+</div>
