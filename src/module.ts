@@ -3,7 +3,7 @@ import { BridgeListener } from './bridge-listener.js';
 import { MODULE_ID } from './constants.js';
 import { getMood, getPersona } from './flags.js';
 import { FoundryThemePlayer } from './foundry-player.js';
-import { registerMoodWidget } from './mood-widget.js';
+import { mountMoodWidget, registerMoodWidget } from './mood-widget.js';
 import { registerPersonaReporting } from './persona.js';
 import {
   buildThemeConfig,
@@ -33,7 +33,7 @@ function isDriver(): boolean {
  * and persona. Cheap, so it runs in full whenever any of those change.
  */
 function sync(): void {
-  ui.players?.render(); // the mood widget depends on who is linked
+  mountMoodWidget(); // depends on who is linked
   if (!isDriver()) return;
   try {
     listener?.updateConfig(buildThemeConfig(getUserThemes(), getEngineSettings()));
@@ -114,5 +114,6 @@ Hooks.once('ready', () => {
   Hooks.on('updateActor', onUpdate);
   Hooks.on('deleteActor', () => resync());
 
+  mountMoodWidget();
   if (!startListener()) ui.notifications.warn(game.i18n.localize('HEROESTHEME.Notify.MissingBridge'));
 });

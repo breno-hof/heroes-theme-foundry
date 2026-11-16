@@ -10,13 +10,22 @@ const WIDGET_CLASS = 'heroes-theme-mood';
  * list, for users the GM has linked to a Discord account.
  */
 export function registerMoodWidget(): void {
-  Hooks.on('renderPlayers', (_app, element) => {
-    // AppV2 passes an HTMLElement; older code paths pass a jQuery-like array.
-    const root = element instanceof HTMLElement ? element : (element as ArrayLike<unknown> | undefined)?.[0];
-    if (!(root instanceof HTMLElement) || root.querySelector(`.${WIDGET_CLASS}`)) return;
-    if (!linkedUserIds().includes(game.user.id)) return;
-    root.append(buildWidget());
-  });
+  Hooks.on('renderPlayers', () => mountMoodWidget());
+}
+
+/**
+ * Put the widget in the Players list if this user is linked, remove it if
+ * not. Safe to call at any time: the list is found by its element ID, so this
+ * works whether or not the render hook above fired.
+ */
+export function mountMoodWidget(): void {
+  if (typeof document === 'undefined') return;
+  const root = document.getElementById('players');
+  if (root === null) return;
+  const existing = root.querySelector(`.${WIDGET_CLASS}`);
+  const linked = linkedUserIds().includes(game.user.id);
+  if (!linked) existing?.remove();
+  else if (existing === null) root.append(buildWidget());
 }
 
 function buildWidget(): HTMLElement {

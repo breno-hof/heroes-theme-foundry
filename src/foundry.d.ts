@@ -89,7 +89,7 @@ declare const CONFIG: {
 };
 
 declare const Hooks: {
-  once(hook: string, callback: () => void): void;
+  once(hook: string, callback: (...args: unknown[]) => void): void;
   on(hook: string, callback: (...args: unknown[]) => void): void;
 };
 
@@ -99,7 +99,6 @@ declare const ui: {
     warn(message: string): void;
     error(message: string): void;
   };
-  players?: { render(options?: object): unknown };
 };
 
 declare function fromUuid(uuid: string): Promise<unknown>;

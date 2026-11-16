@@ -57,8 +57,9 @@
   width: 100%;
 }
 
-.heroes-theme-config .heroes-theme-warning {
-  color: var(--color-level-warning, #b8860b);
+.heroes-theme-config .hint.heroes-theme-warning {
+  color: #d32f2f;
+  font-weight: bold;
 }
 
 /* Mood picker at the bottom of the Players list. */

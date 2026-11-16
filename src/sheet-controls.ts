@@ -11,7 +11,8 @@ export function registerSheetControls(): void {
   // ApplicationV2 sheets: an entry in the header's controls dropdown.
   Hooks.on('getHeaderControlsApplicationV2', (app, controls) => {
     const actor = actorOf(app);
-    if (actor === null || !Array.isArray(controls)) return;
+    // Tidy sheets get their entry through Tidy's own API below; adding one here too would duplicate it.
+    if (actor === null || !Array.isArray(controls) || isTidySheet(app)) return;
     controls.push({ icon: ICON, label: LABEL, action: 'heroesThemeActor', onClick: () => open(actor) });
   });
   // Legacy Application (V1) sheets, still used by many systems: a header button.
@@ -25,6 +26,44 @@ export function registerSheetControls(): void {
       onclick: () => open(actor),
     });
   });
+  // Tidy 5e Sheets draws its own header and only wires up controls registered through its API.
+  Hooks.once('tidy5e-sheet.ready', (api) => {
+    (api as TidyApi | undefined)?.registerActorHeaderControls?.({
+      controls: [
+        {
+          icon: ICON,
+          label: game.i18n.localize(LABEL),
+          action: 'heroesThemeActor',
+          ownership: 'OWNER',
+          position: 'menu',
+          // Tidy binds `this` to the sheet application.
+          async onClickAction(this: unknown): Promise<void> {
+            const actor = actorOf(this);
+            if (actor !== null) open(actor);
+          },
+        },
+      ],
+    });
+  });
+}
+
+/** The one method used from https://github.com/kgar/foundry-vtt-tidy-5e-sheets (`Tidy5eSheetsApi`). */
+interface TidyApi {
+  registerActorHeaderControls?(params: {
+    controls: Array<{
+      icon: string;
+      label: string;
+      action?: string;
+      ownership?: string | number;
+      position?: 'header' | 'menu';
+      onClickAction?: (event: PointerEvent, target: HTMLElement) => Promise<void>;
+    }>;
+  }): void;
+}
+
+function isTidySheet(app: unknown): boolean {
+  const classes = (app as { options?: { classes?: unknown } }).options?.classes;
+  return Array.isArray(classes) && classes.some((name) => typeof name === 'string' && name.startsWith('tidy5e'));
 }
 
 function open(actor: FoundryActor): void {
