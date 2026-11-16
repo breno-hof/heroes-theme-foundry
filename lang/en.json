@@ -1,12 +1,23 @@
 {
   "HEROESTHEME": {
     "Settings": {
-      "BridgeUrl": { "Name": "Bridge URL", "Hint": "WebSocket URL of heroes-theme-bot, e.g. wss://bot.example.com. Only the GM connects." },
-      "BridgeToken": { "Name": "Bridge token", "Hint": "The HT_WS_TOKEN configured on the bot. Stored in this browser only." },
-      "Menu": { "Name": "Themes", "Label": "Configure themes", "Hint": "Link players to their Discord account and theme." }
+      "BridgeUrl": {
+        "Name": "Bridge URL",
+        "Hint": "WebSocket URL of heroes-theme-bot, e.g. wss://bot.example.com. Only the GM connects."
+      },
+      "BridgeToken": {
+        "Name": "Bridge token",
+        "Hint": "The token shown by /heroestheme token on Discord. Stored in this browser only."
+      },
+      "Menu": {
+        "Name": "Themes",
+        "Label": "Configure themes",
+        "Hint": "Bridge connection, player themes and triggers. Visible to the GM only."
+      }
     },
     "Config": {
       "Title": "Hero's Theme",
+      "Bridge": "Bridge",
       "Players": "Players",
       "Player": "Player",
       "DiscordId": "Discord user ID",
@@ -24,7 +35,7 @@
       "Save": "Save"
     },
     "Notify": {
-      "MissingBridge": "Hero's Theme: set the bridge URL and token in the module settings.",
+      "MissingBridge": "Hero's Theme: set the bridge URL and token under Configure themes in the module settings.",
       "InvalidConfig": "Hero's Theme: the configuration is invalid and was not saved.",
       "Refused": "Hero's Theme: the bot refused the connection. Check the bridge token and module version."
     }

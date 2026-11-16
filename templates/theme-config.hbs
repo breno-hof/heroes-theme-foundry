@@ -1,6 +1,20 @@
 <div class="heroes-theme-form standard-form">
   {{!-- ApplicationV2 requires each template part to render exactly one root element. --}}
   <fieldset>
+    <legend>{{localize "HEROESTHEME.Config.Bridge"}}</legend>
+    <div class="form-group">
+      <label>{{localize "HEROESTHEME.Settings.BridgeUrl.Name"}}</label>
+      <input type="url" name="bridge.url" value="{{bridge.url}}" placeholder="wss://bot.example.com">
+      <p class="hint">{{localize "HEROESTHEME.Settings.BridgeUrl.Hint"}}</p>
+    </div>
+    <div class="form-group">
+      <label>{{localize "HEROESTHEME.Settings.BridgeToken.Name"}}</label>
+      <input type="password" name="bridge.token" value="{{bridge.token}}" autocomplete="off">
+      <p class="hint">{{localize "HEROESTHEME.Settings.BridgeToken.Hint"}}</p>
+    </div>
+  </fieldset>
+
+  <fieldset>
     <legend>{{localize "HEROESTHEME.Config.Players"}}</legend>
     <table class="heroes-theme-players">
       <thead>

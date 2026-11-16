@@ -3,8 +3,8 @@ import { BridgeListener } from './bridge-listener.js';
 import { FoundryThemePlayer } from './foundry-player.js';
 import {
   MODULE_ID,
-  Setting,
   buildThemeConfig,
+  getBridge,
   getEngineSettings,
   getUserThemes,
   registerSettings,
@@ -23,28 +23,15 @@ function applyConfig(): void {
   }
 }
 
-Hooks.once('init', () => {
-  registerSettings(applyConfig);
-  game.settings.registerMenu(MODULE_ID, 'themeConfigMenu', {
-    name: 'HEROESTHEME.Settings.Menu.Name',
-    label: 'HEROESTHEME.Settings.Menu.Label',
-    hint: 'HEROESTHEME.Settings.Menu.Hint',
-    icon: 'fa-solid fa-music',
-    type: ThemeConfigApp,
-    restricted: true,
-  });
-});
-
-Hooks.once('ready', () => {
+/** (Re)connect to the bot with the current bridge settings. Returns false if they are not set yet. */
+function startListener(): boolean {
+  listener?.stop();
+  listener = null;
   // One client drives the playlists; Foundry replicates playback to everyone else.
-  if (game.users.activeGM?.isSelf !== true) return;
+  if (game.users.activeGM?.isSelf !== true) return true;
 
-  const url = String(game.settings.get(MODULE_ID, Setting.BridgeUrl) ?? '');
-  const token = String(game.settings.get(MODULE_ID, Setting.BridgeToken) ?? '');
-  if (url === '' || token === '') {
-    ui.notifications.warn(game.i18n.localize('HEROESTHEME.Notify.MissingBridge'));
-    return;
-  }
+  const { url, token } = getBridge();
+  if (url === '' || token === '') return false;
 
   try {
     listener = new BridgeListener({
@@ -61,4 +48,22 @@ Hooks.once('ready', () => {
     logger.log('error', 'startup_failed', { error: String(error) });
     ui.notifications.error(game.i18n.localize('HEROESTHEME.Notify.InvalidConfig'));
   }
+  return true;
+}
+
+Hooks.once('init', () => {
+  registerSettings(applyConfig, () => void startListener());
+  // `restricted: true` shows this menu, the module's only visible setting, to GMs alone.
+  game.settings.registerMenu(MODULE_ID, 'themeConfigMenu', {
+    name: 'HEROESTHEME.Settings.Menu.Name',
+    label: 'HEROESTHEME.Settings.Menu.Label',
+    hint: 'HEROESTHEME.Settings.Menu.Hint',
+    icon: 'fa-solid fa-music',
+    type: ThemeConfigApp,
+    restricted: true,
+  });
+});
+
+Hooks.once('ready', () => {
+  if (!startListener()) ui.notifications.warn(game.i18n.localize('HEROESTHEME.Notify.MissingBridge'));
 });

@@ -24,26 +24,27 @@ export const Setting = {
   Engine: 'engine',
 } as const;
 
-export function registerSettings(onConfigChange: () => void): void {
+export function registerSettings(onConfigChange: () => void, onBridgeChange: () => void): void {
+  // Nothing here uses `config: true`: Foundry shows such settings to every
+  // player. All of them are edited through ThemeConfigApp, a GM-only menu.
+  //
   // Client scope: the URL and token stay in the GM's browser instead of being
   // replicated to every player as world settings would be.
   game.settings.register<string>(MODULE_ID, Setting.BridgeUrl, {
-    name: 'HEROESTHEME.Settings.BridgeUrl.Name',
-    hint: 'HEROESTHEME.Settings.BridgeUrl.Hint',
+    name: 'Bridge URL',
     scope: 'client',
-    config: true,
+    config: false,
     type: String,
     default: '',
-    requiresReload: true,
+    onChange: onBridgeChange,
   });
   game.settings.register<string>(MODULE_ID, Setting.BridgeToken, {
-    name: 'HEROESTHEME.Settings.BridgeToken.Name',
-    hint: 'HEROESTHEME.Settings.BridgeToken.Hint',
+    name: 'Bridge token',
     scope: 'client',
-    config: true,
+    config: false,
     type: String,
     default: '',
-    requiresReload: true,
+    onChange: onBridgeChange,
   });
   // The two world settings below are edited through ThemeConfigApp.
   game.settings.register<UserThemes>(MODULE_ID, Setting.UserThemes, {
@@ -62,6 +63,13 @@ export function registerSettings(onConfigChange: () => void): void {
     default: {},
     onChange: onConfigChange,
   });
+}
+
+export function getBridge(): { url: string; token: string } {
+  return {
+    url: String(game.settings.get(MODULE_ID, Setting.BridgeUrl) ?? '').trim(),
+    token: String(game.settings.get(MODULE_ID, Setting.BridgeToken) ?? '').trim(),
+  };
 }
 
 export function getUserThemes(): UserThemes {

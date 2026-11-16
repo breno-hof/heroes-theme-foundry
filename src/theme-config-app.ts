@@ -3,6 +3,7 @@ import {
   MODULE_ID,
   Setting,
   buildThemeConfig,
+  getBridge,
   getEngineSettings,
   getUserThemes,
   type UserThemes,
@@ -32,6 +33,7 @@ export class ThemeConfigApp extends HandlebarsApplicationMixin(ApplicationV2) {
       for (const sound of playlist.sounds) sounds[sound.uuid] = `${playlist.name} / ${sound.name}`;
     }
     return {
+      bridge: getBridge(),
       users: [...game.users].map((user) => ({
         id: user.id,
         name: user.name,
@@ -56,6 +58,7 @@ export class ThemeConfigApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const data = foundry.utils.expandObject(formData.object) as {
       users?: Record<string, { discordUserId?: unknown; themeId?: unknown; enabled?: unknown }>;
       engine?: EngineSettingsInput;
+      bridge?: { url?: unknown; token?: unknown };
     };
     const userThemes: UserThemes = {};
     for (const [userId, entry] of Object.entries(data.users ?? {})) {
@@ -78,5 +81,11 @@ export class ThemeConfigApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     await game.settings.set(MODULE_ID, Setting.UserThemes, userThemes);
     await game.settings.set(MODULE_ID, Setting.Engine, engine);
+
+    const current = getBridge();
+    const url = String(data.bridge?.url ?? '').trim();
+    const token = String(data.bridge?.token ?? '').trim();
+    if (url !== current.url) await game.settings.set(MODULE_ID, Setting.BridgeUrl, url);
+    if (token !== current.token) await game.settings.set(MODULE_ID, Setting.BridgeToken, token);
   }
 }

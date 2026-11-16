@@ -1,12 +1,23 @@
 {
   "HEROESTHEME": {
     "Settings": {
-      "BridgeUrl": { "Name": "URL do bridge", "Hint": "URL WebSocket do heroes-theme-bot, ex.: wss://bot.exemplo.com. Somente o Mestre se conecta." },
-      "BridgeToken": { "Name": "Token do bridge", "Hint": "O HT_WS_TOKEN configurado no bot. Fica salvo apenas neste navegador." },
-      "Menu": { "Name": "Temas", "Label": "Configurar temas", "Hint": "Vincule cada jogador à conta do Discord e ao tema dele." }
+      "BridgeUrl": {
+        "Name": "URL do bridge",
+        "Hint": "URL WebSocket do heroes-theme-bot, ex.: wss://bot.exemplo.com. Somente o Mestre se conecta."
+      },
+      "BridgeToken": {
+        "Name": "Token do bridge",
+        "Hint": "O token mostrado por /heroestheme token no Discord. Fica salvo apenas neste navegador."
+      },
+      "Menu": {
+        "Name": "Temas",
+        "Label": "Configurar temas",
+        "Hint": "Conexão com o bridge, temas dos jogadores e gatilhos. Visível apenas para o Mestre."
+      }
     },
     "Config": {
       "Title": "Hero's Theme",
+      "Bridge": "Bridge",
       "Players": "Jogadores",
       "Player": "Jogador",
       "DiscordId": "ID de usuário do Discord",
@@ -24,7 +35,7 @@
       "Save": "Salvar"
     },
     "Notify": {
-      "MissingBridge": "Hero's Theme: defina a URL e o token do bridge nas configurações do módulo.",
+      "MissingBridge": "Hero's Theme: defina a URL e o token do bridge em Configurar temas, nas configurações do módulo.",
       "InvalidConfig": "Hero's Theme: a configuração é inválida e não foi salva.",
       "Refused": "Hero's Theme: o bot recusou a conexão. Confira o token do bridge e a versão do módulo."
     }
