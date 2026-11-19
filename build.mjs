@@ -28,7 +28,10 @@ await build({
 });
 await Promise.all(STATIC.map((path) => cp(path, `dist/${path}`, { recursive: true })));
 await rename('dist/styles/heroes-theme.css', `dist/${style}`);
+// The packaged manifest is attached to a specific release, so its download must
+// point at that release's zip. `manifest` stays on latest so installs see updates.
+const download = `${manifest.url}/releases/download/v${manifest.version}/heroes-theme.zip`;
 await writeFile(
   'dist/module.json',
-  `${JSON.stringify({ ...manifest, esmodules: [script], styles: [style] }, null, 2)}\n`,
+  `${JSON.stringify({ ...manifest, download, esmodules: [script], styles: [style] }, null, 2)}\n`,
 );

@@ -56,7 +56,7 @@ npm run dev     # same build, unminified with source maps
 
 ## Release
 
-Bump `version` in both `module.json` and `package.json`, merge, then push a matching tag (`v0.2.0`). The Release workflow builds, zips `dist/` into `heroes-theme.zip`, and publishes a GitHub Release with the zip and `module.json` attached.
+Bump `version` in both `module.json` and `package.json`, merge, then push a matching tag (`v0.2.0`). The Release workflow builds, zips `dist/` into `heroes-theme.zip`, and publishes a GitHub Release with the zip and `module.json` attached. It then registers the version on the foundryvtt.com package listing, using the package's release token from the `FOUNDRY_RELEASE_TOKEN` repository secret (the step is skipped with a warning when the secret is missing).
 
 ## 📄 License
 This project is open-source under the **AGPL-3.0** license — see the [LICENSE](LICENSE) file for details. You are free to use and modify it, provided that any derivative work remains open-source and credits the original author.
