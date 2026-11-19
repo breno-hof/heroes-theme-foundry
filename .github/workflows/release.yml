@@ -1,8 +1,9 @@
 name: Release
 
 # Push a tag like v0.2.0 (matching module.json) to publish a GitHub Release with
-# heroes-theme.zip and module.json attached. Foundry installs and updates from
-# the releases/latest/download/ URLs in module.json.
+# heroes-theme.zip and module.json attached, then register that version on the
+# foundryvtt.com package listing through the Package Release API. Installed
+# copies update from the releases/latest/download/module.json manifest URL.
 on:
   push:
     tags: ['v*.*.*']
@@ -57,3 +58,32 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ github.ref_name }}
         run: gh release create "$TAG" heroes-theme.zip dist/module.json --title "$TAG" --generate-notes --verify-tag
+
+      # Needs the package's "Package Release Token" (fvttp_...) from its edit page
+      # on foundryvtt.com, stored as the FOUNDRY_RELEASE_TOKEN repository secret.
+      - name: Publish to the Foundry package listing
+        env:
+          FOUNDRY_RELEASE_TOKEN: ${{ secrets.FOUNDRY_RELEASE_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [[ -z "$FOUNDRY_RELEASE_TOKEN" ]]; then
+            echo "::warning::FOUNDRY_RELEASE_TOKEN is not set; skipped the foundryvtt.com release"
+            exit 0
+          fi
+          body="$(node -e '
+            const m = require("./module.json");
+            const base = `https://github.com/${process.env.REPO}/releases`;
+            console.log(JSON.stringify({
+              id: m.id,
+              release: {
+                version: m.version,
+                manifest: `${base}/download/${process.env.TAG}/module.json`,
+                notes: `${base}/tag/${process.env.TAG}`,
+                compatibility: { minimum: m.compatibility.minimum, verified: m.compatibility.verified },
+              },
+            }));')"
+          curl --fail-with-body -sS -X POST https://foundryvtt.com/_api/packages/release_version/ \
+            -H "Content-Type: application/json" \
+            -H "Authorization: $FOUNDRY_RELEASE_TOKEN" \
+            -d "$body"
