@@ -89,8 +89,9 @@ declare const CONFIG: {
 };
 
 declare const Hooks: {
-  once(hook: string, callback: (...args: unknown[]) => void): void;
-  on(hook: string, callback: (...args: unknown[]) => void): void;
+  once(hook: string, callback: (...args: unknown[]) => void): number;
+  on(hook: string, callback: (...args: unknown[]) => void): number;
+  off(hook: string, id: number): void;
 };
 
 declare const ui: {
@@ -99,6 +100,8 @@ declare const ui: {
     warn(message: string): void;
     error(message: string): void;
   };
+  /** The camera dock (CameraViews). Absent before the UI is ready. */
+  webrtc?: object | null;
 };
 
 declare function fromUuid(uuid: string): Promise<unknown>;
@@ -109,11 +112,17 @@ declare namespace foundry {
       static DEFAULT_OPTIONS: object;
       constructor(options?: object);
       get title(): string;
+      readonly element: HTMLElement;
+      protected _onRender(context: object, options: object): void;
       render(options?: { force?: boolean }): Promise<this>;
       close(): Promise<this>;
       protected _prepareContext(options: object): Promise<object>;
     }
     function HandlebarsApplicationMixin<T extends typeof ApplicationV2>(base: T): T;
+  }
+  namespace applications.apps.av {
+    /** Only `prototype.setUserIsSpeaking(userId, speaking)` is used. */
+    const CameraViews: { prototype: object } | undefined;
   }
   namespace applications.ux {
     class FormDataExtended {

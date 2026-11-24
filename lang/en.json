@@ -1,28 +1,27 @@
 {
   "HEROESTHEME": {
     "Settings": {
-      "BridgeUrl": {
-        "Name": "Bridge URL",
-        "Hint": "WebSocket URL of heroes-theme-bot, e.g. wss://bot.example.com. Only the GM connects."
-      },
-      "BridgeToken": {
-        "Name": "Bridge token",
-        "Hint": "The token shown by /heroestheme token on Discord. Stored in this browser only."
-      },
       "Menu": {
-        "Name": "Themes",
-        "Label": "Configure themes",
-        "Hint": "Bridge connection, player themes and triggers. Visible to the GM only."
+        "Name": "Table setup",
+        "Label": "Configure",
+        "Hint": "Voice source, who takes part, fallback themes and timing. Visible to the GM only."
       },
       "MyThemes": {
         "Name": "My themes",
-        "Label": "Choose my themes",
+        "Label": "Choose",
         "Hint": "Your mood and the music that plays when you speak."
       }
     },
     "Config": {
       "Title": "Hero's Theme",
-      "Bridge": "Bridge",
+      "Voice": "Voice",
+      "Source": "Detect speech from",
+      "SourceFoundry": "Foundry audio/video chat",
+      "SourceDiscord": "Discord (self-hosted bridge)",
+      "SourceFoundryHint": "A theme plays while Foundry shows its player as speaking. Players join the audio/video chat with their microphone on; voice activation and push-to-talk both work.",
+      "BridgeUrl": "Bridge URL",
+      "BridgeToken": "Bridge token",
+      "BridgeHint": "WebSocket URL and token of your bridge. Both are stored in this browser only; only the GM connects.",
       "Players": "Players",
       "Player": "Player",
       "DiscordId": "Discord user ID",
@@ -38,14 +37,16 @@
       "Layered": "Play all themes together",
       "Volume": "Default volume",
       "Save": "Save",
-      "PlayersHint": "Theme is a fallback used only when the player has not chosen their own. Players pick their themes and mood themselves; characters get theirs from the Hero's Theme entry in the sheet header.",
+      "PlayersHint": "The fallback theme plays only when a player has not chosen a theme of their own. Players pick their own themes and mood; characters get theirs from the Hero's Theme entry in the sheet header. Untick On to stop someone triggering themes.",
       "AllowUploads": "Players can upload audio",
       "AllowUploadsHint": "Changes Foundry's role permissions (Upload Files and Use File Browser) for the Player and Trusted Player roles. Without it, players can only choose sounds that are already in their playlist."
     },
     "Notify": {
-      "MissingBridge": "Hero's Theme: set the bridge URL and token under Configure themes in the module settings.",
-      "InvalidConfig": "Hero's Theme: the configuration is invalid and was not saved.",
-      "Refused": "Hero's Theme: the bot refused the connection. Check the bridge token and module version."
+      "MissingBridge": "Hero's Theme: set the bridge URL and token under Table setup in the module settings.",
+      "InvalidConfig": "Hero's Theme: invalid configuration. Check that each Discord user ID has 15 to 22 digits and is used only once.",
+      "Refused": "Hero's Theme: the bot refused the connection. Check the bridge token and module version.",
+      "AvDisabled": "Hero's Theme: Foundry's audio/video chat is off in this world. Turn it on under Configure Settings → Core → Configure Audio/Video so themes can follow who is speaking.",
+      "AvUnavailable": "Hero's Theme: could not follow Foundry's audio/video chat, so speech cannot be detected. Reload the page; if this keeps happening, another module may be replacing the camera views."
     },
     "Mood": {
       "default": "Default",
@@ -70,7 +71,7 @@
       "OpenPlaylist": "Open my playlist",
       "PlaylistHint": "Add your own tracks to this playlist, then pick them above.",
       "UploadDisabled": "Uploading files is disabled for players. Ask the GM to enable it, or choose from the sounds already available.",
-      "NoPlaylist": "You do not have a playlist yet. It is created once the GM links your Discord account.",
+      "NoPlaylist": "You do not have a playlist yet. It is created the next time the GM is online, as long as Hero's Theme is on for you.",
       "KeepCurrent": "Keep current theme"
     },
     "Actor": {

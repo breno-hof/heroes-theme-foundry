@@ -1,13 +1,13 @@
 import { MOODS, MoodSchema } from '@breno-hof/heroes-theme-core';
 import { getMood, setMood } from './flags.js';
-import { linkedUserIds } from './settings.js';
+import { participatingUserIds } from './settings.js';
 import { ThemeSetApp } from './theme-set-app.js';
 
 const WIDGET_CLASS = 'heroes-theme-mood';
 
 /**
  * Adds a mood picker and a "my themes" button to the bottom of the Players
- * list, for users the GM has linked to a Discord account.
+ * list, for users who can trigger a theme.
  */
 export function registerMoodWidget(): void {
   Hooks.on('renderPlayers', () => mountMoodWidget());
@@ -23,7 +23,7 @@ export function mountMoodWidget(): void {
   const root = document.getElementById('players');
   if (root === null) return;
   const existing = root.querySelector(`.${WIDGET_CLASS}`);
-  const linked = linkedUserIds().includes(game.user.id);
+  const linked = participatingUserIds().includes(game.user.id);
   if (!linked) existing?.remove();
   else if (existing === null) root.append(buildWidget());
 }

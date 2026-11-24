@@ -1,8 +1,8 @@
 {
   "id": "heroes-theme",
   "title": "Hero's Theme",
-  "description": "Plays a character's theme from a Foundry playlist while their player is speaking on Discord. Requires a running heroes-theme-bot.",
-  "version": "0.3.2",
+  "description": "Plays a character's theme from a Foundry playlist while their player is speaking in Foundry's built-in audio/video chat. Works out of the box, with no external service.",
+  "version": "0.4.0",
   "authors": [
     {
       "name": "breno-hof",

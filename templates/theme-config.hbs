@@ -1,17 +1,28 @@
-<div class="heroes-theme-form standard-form">
+<div class="heroes-theme-form" data-source="{{voiceSource}}">
   {{!-- ApplicationV2 requires each template part to render exactly one root element. --}}
-  <details class="heroes-theme-section" {{#unless bridgeConfigured}}open{{/unless}}>
-    <summary>{{localize "HEROESTHEME.Config.Bridge"}}</summary>
+  <details class="heroes-theme-section" open>
+    <summary>{{localize "HEROESTHEME.Config.Voice"}}</summary>
     <div class="form-group">
-      <label>{{localize "HEROESTHEME.Settings.BridgeUrl.Name"}}</label>
+      <label>{{localize "HEROESTHEME.Config.Source"}}</label>
+      <select name="voiceSource">
+        {{selectOptions voiceSourceChoices selected=voiceSource localize=true}}
+      </select>
+    </div>
+    <p class="hint heroes-theme-foundry-only">{{localize "HEROESTHEME.Config.SourceFoundryHint"}}</p>
+    {{#if avDisabled}}
+    <p class="hint heroes-theme-warning heroes-theme-foundry-only">
+      <i class="fa-solid fa-triangle-exclamation"></i> {{localize "HEROESTHEME.Notify.AvDisabled"}}
+    </p>
+    {{/if}}
+    <div class="form-group heroes-theme-discord-only">
+      <label>{{localize "HEROESTHEME.Config.BridgeUrl"}}</label>
       <input type="text" name="bridge.url" value="{{bridge.url}}" placeholder="wss://bot.example.com">
-      <p class="hint">{{localize "HEROESTHEME.Settings.BridgeUrl.Hint"}}</p>
     </div>
-    <div class="form-group">
-      <label>{{localize "HEROESTHEME.Settings.BridgeToken.Name"}}</label>
+    <div class="form-group heroes-theme-discord-only">
+      <label>{{localize "HEROESTHEME.Config.BridgeToken"}}</label>
       <input type="password" name="bridge.token" value="{{bridge.token}}" autocomplete="off">
-      <p class="hint">{{localize "HEROESTHEME.Settings.BridgeToken.Hint"}}</p>
     </div>
+    <p class="hint heroes-theme-discord-only">{{localize "HEROESTHEME.Config.BridgeHint"}}</p>
   </details>
 
   <details class="heroes-theme-section" open>
@@ -20,18 +31,18 @@
       <thead>
         <tr>
           <th>{{localize "HEROESTHEME.Config.Player"}}</th>
-          <th>{{localize "HEROESTHEME.Config.DiscordId"}}</th>
+          <th class="heroes-theme-discord-only">{{localize "HEROESTHEME.Config.DiscordId"}}</th>
           <th>{{localize "HEROESTHEME.Config.Theme"}}</th>
-          <th>{{localize "HEROESTHEME.Config.Enabled"}}</th>
+          <th class="heroes-theme-enabled">{{localize "HEROESTHEME.Config.Enabled"}}</th>
         </tr>
       </thead>
       <tbody>
         {{#each users}}
         <tr>
           <td class="heroes-theme-name">{{name}}</td>
-          <td>
+          <td class="heroes-theme-discord-only">
             <input type="text" name="users.{{id}}.discordUserId" value="{{discordUserId}}"
-                   inputmode="numeric" pattern="\d{15,22}" placeholder="123456789012345678">
+                   inputmode="numeric" placeholder="123456789012345678">
           </td>
           <td>
             <select name="users.{{id}}.themeId">
@@ -39,7 +50,7 @@
               {{selectOptions ../sounds selected=themeId}}
             </select>
           </td>
-          <td><input type="checkbox" name="users.{{id}}.enabled" {{checked enabled}}></td>
+          <td class="heroes-theme-enabled"><input type="checkbox" name="users.{{id}}.enabled" {{checked enabled}}></td>
         </tr>
         {{/each}}
       </tbody>

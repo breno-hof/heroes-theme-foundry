@@ -1,28 +1,27 @@
 {
   "HEROESTHEME": {
     "Settings": {
-      "BridgeUrl": {
-        "Name": "URL do bridge",
-        "Hint": "URL WebSocket do heroes-theme-bot, ex.: wss://bot.exemplo.com. Somente o Mestre se conecta."
-      },
-      "BridgeToken": {
-        "Name": "Token do bridge",
-        "Hint": "O token mostrado por /heroestheme token no Discord. Fica salvo apenas neste navegador."
-      },
       "Menu": {
-        "Name": "Temas",
-        "Label": "Configurar temas",
-        "Hint": "Conexão com o bridge, temas dos jogadores e gatilhos. Visível apenas para o Mestre."
+        "Name": "Configuração da mesa",
+        "Label": "Configurar",
+        "Hint": "Fonte de voz, quem participa, temas reserva e tempos. Visível apenas para o Mestre."
       },
       "MyThemes": {
         "Name": "Meus temas",
-        "Label": "Escolher meus temas",
+        "Label": "Escolher",
         "Hint": "Seu humor e a música que toca quando você fala."
       }
     },
     "Config": {
       "Title": "Hero's Theme",
-      "Bridge": "Bridge",
+      "Voice": "Voz",
+      "Source": "Detectar fala pelo",
+      "SourceFoundry": "Chat de áudio/vídeo do Foundry",
+      "SourceDiscord": "Discord (bridge auto-hospedado)",
+      "SourceFoundryHint": "Um tema toca enquanto o Foundry mostra o jogador falando. Os jogadores entram no chat de áudio/vídeo com o microfone ligado; ativação por voz e pressionar para falar funcionam.",
+      "BridgeUrl": "URL do bridge",
+      "BridgeToken": "Token do bridge",
+      "BridgeHint": "URL WebSocket e token do seu bridge. Ficam salvos apenas neste navegador; somente o Mestre se conecta.",
       "Players": "Jogadores",
       "Player": "Jogador",
       "DiscordId": "ID de usuário do Discord",
@@ -38,14 +37,16 @@
       "Layered": "Tocar todos os temas juntos",
       "Volume": "Volume padrão",
       "Save": "Salvar",
-      "PlayersHint": "Tema é uma reserva, usada só quando o jogador não escolheu o próprio. Os jogadores escolhem seus temas e humor; os personagens recebem os deles pela opção Hero's Theme no cabeçalho da ficha.",
+      "PlayersHint": "O tema reserva só toca quando o jogador não escolheu um tema próprio. Os jogadores escolhem os próprios temas e o humor; os personagens recebem os deles pela opção Hero's Theme no cabeçalho da ficha. Desmarque Ativo para impedir que alguém acione temas.",
       "AllowUploads": "Jogadores podem enviar áudio",
       "AllowUploadsHint": "Altera as permissões de papel do Foundry (Enviar Arquivos e Usar o Navegador de Arquivos) para Jogador e Jogador Confiável. Sem isso, os jogadores só escolhem sons que já estão na playlist deles."
     },
     "Notify": {
-      "MissingBridge": "Hero's Theme: defina a URL e o token do bridge em Configurar temas, nas configurações do módulo.",
-      "InvalidConfig": "Hero's Theme: a configuração é inválida e não foi salva.",
-      "Refused": "Hero's Theme: o bot recusou a conexão. Confira o token do bridge e a versão do módulo."
+      "MissingBridge": "Hero's Theme: defina a URL e o token do bridge em Configuração da mesa, nas configurações do módulo.",
+      "InvalidConfig": "Hero's Theme: configuração inválida. Confira se cada ID de usuário do Discord tem de 15 a 22 dígitos e aparece uma única vez.",
+      "Refused": "Hero's Theme: o bot recusou a conexão. Confira o token do bridge e a versão do módulo.",
+      "AvDisabled": "Hero's Theme: o chat de áudio/vídeo do Foundry está desligado neste mundo. Ative-o nas configurações principais do Foundry, em Áudio/Vídeo, para que os temas sigam quem está falando.",
+      "AvUnavailable": "Hero's Theme: não foi possível acompanhar o chat de áudio/vídeo do Foundry, então a fala não pode ser detectada. Recarregue a página; se continuar, outro módulo pode estar substituindo a área de câmeras."
     },
     "Mood": {
       "default": "Padrão",
@@ -69,8 +70,8 @@
       "MyMusic": "Minhas músicas",
       "OpenPlaylist": "Abrir minha playlist",
       "PlaylistHint": "Adicione suas próprias faixas a esta playlist e depois escolha-as acima.",
-      "UploadDisabled": "O envio de arquivos está desativado para jogadores. Peça ao Mestre para ativar, ou escolha entre os sons já disponíveis.",
-      "NoPlaylist": "Você ainda não tem uma playlist. Ela é criada quando o Mestre vincula a sua conta do Discord.",
+      "UploadDisabled": "O envio de arquivos está desativado para jogadores. Peça ao Mestre para ativá-lo ou escolha entre os sons já disponíveis.",
+      "NoPlaylist": "Você ainda não tem uma playlist. Ela é criada na próxima vez que o Mestre estiver online, desde que o Hero's Theme esteja ativo para você.",
       "KeepCurrent": "Manter o tema atual"
     },
     "Actor": {

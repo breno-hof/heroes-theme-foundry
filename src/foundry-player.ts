@@ -1,5 +1,5 @@
 import type { ThemeCommand } from '@breno-hof/heroes-theme-core';
-import type { ThemePlayer } from './bridge-listener.js';
+import type { ThemePlayer } from './theme-engine.js';
 
 function isPlaylistSound(value: unknown): value is FoundryPlaylistSound {
   return typeof value === 'object' && value !== null && 'parent' in value && 'playing' in value;
