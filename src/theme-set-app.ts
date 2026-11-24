@@ -16,7 +16,7 @@ export type ThemeTarget = { kind: 'user'; user: FoundryUser } | { kind: 'actor';
 export class ThemeSetApp extends HandlebarsApplicationMixin(ApplicationV2) {
   static override DEFAULT_OPTIONS = {
     tag: 'form',
-    classes: ['heroes-theme-config', 'standard-form'],
+    classes: ['heroes-theme-config'],
     window: { icon: 'fa-solid fa-music', resizable: true, contentClasses: ['standard-form'] },
     position: { width: 520 },
     form: { handler: ThemeSetApp.#onSubmit, closeOnSubmit: true },

@@ -1,28 +1,27 @@
+/**
+ * Optional voice source: speech reported by a self-hosted Discord bot over a
+ * WebSocket, for groups that talk on Discord instead of Foundry A/V. Nothing
+ * else in the module depends on this file.
+ */
 import {
   CloseCode,
-  ThemeStateManager,
   createHello,
   decodeServerMessage,
   encodeMessage,
   type Logger,
-  type Mood,
-  type ThemeCommand,
-  type ThemeConfigInput,
 } from '@breno-hof/heroes-theme-core';
+import type { VoiceSource } from './theme-engine.js';
 
-/** Executes theme commands against a specific VTT. */
-export interface ThemePlayer {
-  execute(command: ThemeCommand): Promise<void>;
-}
-
-export interface BridgeListenerOptions {
+export interface DiscordBridgeOptions {
   url: string;
   token: string;
   clientVersion: string;
-  config: ThemeConfigInput;
-  player: ThemePlayer;
   logger: Logger;
-  /** Called once when the bot rejects the token or protocol version; the listener stops retrying. */
+  /** A Discord user started or stopped speaking. */
+  onSpeaking: (discordUserId: string, speaking: boolean) => void;
+  /** The connection dropped; speaking state is unknown until it is back. */
+  onDisconnect: () => void;
+  /** Called once when the bot rejects the token or protocol version; the source stops retrying. */
   onRefused?: () => void;
 }
 
@@ -31,26 +30,16 @@ const RECONNECT_MAX_MS = 30_000;
 /** Close codes that will fail again identically, so retrying is pointless. */
 const FATAL_CLOSE_CODES: ReadonlySet<number> = new Set([CloseCode.Unauthorized, CloseCode.UnsupportedVersion]);
 
-/**
- * Keeps a WebSocket open to heroes-theme-bot, feeds speaking events into the
- * core state manager and hands the resulting commands to a `ThemePlayer`.
- */
-export class BridgeListener {
-  readonly #options: BridgeListenerOptions;
-  readonly #manager: ThemeStateManager;
+/** Keeps a WebSocket open to the bot, with handshake and reconnect backoff. */
+export class DiscordBridgeSource implements VoiceSource {
+  readonly #options: DiscordBridgeOptions;
   #socket: WebSocket | null = null;
   #reconnectTimer: ReturnType<typeof setTimeout> | undefined;
   #attempt = 0;
   #stopped = true;
 
-  constructor(options: BridgeListenerOptions) {
+  constructor(options: DiscordBridgeOptions) {
     this.#options = options;
-    this.#manager = new ThemeStateManager({ config: options.config, logger: options.logger });
-    this.#manager.onCommand((command) => {
-      options.player.execute(command).catch((error: unknown) => {
-        options.logger.log('error', 'theme_command_failed', { command: command.type, error: String(error) });
-      });
-    });
   }
 
   start(): void {
@@ -64,18 +53,6 @@ export class BridgeListener {
     clearTimeout(this.#reconnectTimer);
     this.#socket?.close(1000, 'client stopping');
     this.#socket = null;
-    this.#manager.reset();
-  }
-
-  /** Throws `ZodError` if the config is invalid; the previous config stays in effect. */
-  updateConfig(config: ThemeConfigInput): void {
-    this.#manager.updateConfig(config);
-  }
-
-  /** Tell the state manager what mood a speaker is in and which character they are voicing. */
-  setContext(discordUserId: string, mood: Mood, persona: string | null): void {
-    this.#manager.setMood(discordUserId, mood);
-    this.#manager.setPersona(discordUserId, persona);
   }
 
   #connect(): void {
@@ -101,7 +78,7 @@ export class BridgeListener {
           logger.log('info', 'bridge_connected', { sessionId: message.sessionId, server: message.serverVersion });
           return;
         case 'voice.speaking':
-          this.#manager.handleSpeaking(message.userId, message.speaking);
+          this.#options.onSpeaking(message.userId, message.speaking);
           return;
         case 'error':
           logger.log('error', 'bridge_error', { code: message.code, message: message.message });
@@ -113,7 +90,7 @@ export class BridgeListener {
       if (this.#socket !== socket) return;
       this.#socket = null;
       // Speaking state is unknown while disconnected: stop everything rather than leave themes stuck on.
-      this.#manager.reset();
+      this.#options.onDisconnect();
       if (this.#stopped) return;
       if (FATAL_CLOSE_CODES.has(event.code)) {
         this.#stopped = true;

@@ -41,10 +41,15 @@
   vertical-align: middle;
 }
 
-.heroes-theme-config .heroes-theme-players th:nth-child(1) { width: 22%; }
-.heroes-theme-config .heroes-theme-players th:nth-child(2) { width: 28%; }
-.heroes-theme-config .heroes-theme-players th:nth-child(4) { width: 3.5rem; text-align: center; }
-.heroes-theme-config .heroes-theme-players td:nth-child(4) { text-align: center; }
+.heroes-theme-config .heroes-theme-players th:first-child { width: 25%; }
+.heroes-theme-config .heroes-theme-players th.heroes-theme-discord-only { width: 28%; }
+.heroes-theme-config .heroes-theme-players .heroes-theme-enabled { width: 3.5rem; text-align: center; }
+
+/* Fields that only apply to one voice source; the source picker switches them without a re-render. */
+.heroes-theme-config .heroes-theme-form[data-source="foundry"] .heroes-theme-discord-only,
+.heroes-theme-config .heroes-theme-form[data-source="discord"] .heroes-theme-foundry-only {
+  display: none;
+}
 
 .heroes-theme-config .heroes-theme-players .heroes-theme-name {
   overflow: hidden;

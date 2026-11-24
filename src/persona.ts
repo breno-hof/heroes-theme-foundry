@@ -1,5 +1,5 @@
 import { getActiveActorId, setActiveActorId } from './flags.js';
-import { linkedUserIds } from './settings.js';
+import { participatingUserIds } from './settings.js';
 
 /**
  * Every client reports which character its user is voicing, because only that
@@ -14,8 +14,8 @@ export function registerPersonaReporting(): void {
 }
 
 async function reportPersona(): Promise<void> {
-  // Users the GM has not linked to Discord never trigger a theme; do not write flags for them.
-  if (!linkedUserIds().includes(game.user.id)) return;
+  // Users who cannot trigger a theme do not need their persona reported.
+  if (!participatingUserIds().includes(game.user.id)) return;
   const actorId = currentActorId();
   if (actorId !== getActiveActorId(game.user)) await setActiveActorId(game.user, actorId);
 }
